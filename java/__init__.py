@@ -20,13 +20,11 @@ _java_types_common = {
     "Integer": "java.lang.Integer",
     "Long": "java.lang.Long",
     "UUID": "java.util.UUID",
-
     "longArray": "long[]",
     "byteArray": "byte[]",
     "String": "java.lang.String",
     "Data": "com.hazelcast.internal.serialization.Data",
     "SqlPage": "com.hazelcast.sql.impl.client.SqlPage",
-
     "Address": "com.hazelcast.cluster.Address",
     "ErrorHolder": "com.hazelcast.client.impl.protocol.exception.ErrorHolder",
     "StackTraceElement": "java.lang.StackTraceElement",
@@ -45,7 +43,6 @@ _java_types_common = {
     "NearCachePreloaderConfig": "com.hazelcast.config.NearCachePreloaderConfig",
     "PredicateConfigHolder": "com.hazelcast.client.impl.protocol.task.dynamicconfig.PredicateConfigHolder",
     "DurationConfig": "com.hazelcast.config.CacheSimpleConfig.ExpiryPolicyFactoryConfig.DurationConfig",
-
     "MergePolicyConfig": "com.hazelcast.config.MergePolicyConfig",
     "CacheConfigHolder": "com.hazelcast.client.impl.protocol.codec.holder.CacheConfigHolder",
     "CacheEventData": "com.hazelcast.cache.impl.CacheEventData",
@@ -59,11 +56,9 @@ _java_types_common = {
     "CacheSimpleEntryListenerConfig": "com.hazelcast.config.CacheSimpleEntryListenerConfig",
     "ClientBwListEntry": "com.hazelcast.internal.management.dto.ClientBwListEntryDTO",
     "EndpointQualifier": "com.hazelcast.instance.EndpointQualifier",
-
     "Map_String_String": "java.util.Map<java.lang.String, java.lang.String>",
     "Map_String_Data": "java.util.Map<java.lang.String, com.hazelcast.internal.serialization.Data>",
     "Map_EndpointQualifier_Address": "java.util.Map<com.hazelcast.instance.EndpointQualifier, com.hazelcast.cluster.Address>",
-
     "List_CPMember": "java.util.Collection<com.hazelcast.cp.CPMember>",
     "Schema": "com.hazelcast.internal.serialization.impl.compact.Schema",
     "FieldDescriptor": "com.hazelcast.internal.serialization.impl.compact.FieldDescriptor",
@@ -90,6 +85,7 @@ _java_types_common = {
     "List_DiscoveryStrategyConfig": "java.util.List<com.hazelcast.client.impl.protocol.codec.holder.DiscoveryStrategyConfigHolder>",
     "DiscoveryConfig": "com.hazelcast.client.impl.protocol.codec.holder.DiscoveryConfigHolder",
     "WanSyncConfig": "com.hazelcast.client.impl.protocol.codec.holder.WanSyncConfigHolder",
+    "NamespaceConfig": "com.hazelcast.client.impl.protocol.codec.holder.NamespaceConfigHolder",
 }
 
 _java_types_encode = {
@@ -109,7 +105,6 @@ _java_types_encode = {
     "JobAndSqlSummary": "com.hazelcast.jet.impl.JobAndSqlSummary",
     "CPMember": "com.hazelcast.cp.CPMember",
     "MigrationState": "com.hazelcast.partition.MigrationState",
-
     "List_Long": "java.util.Collection<java.lang.Long>",
     "List_Integer": "java.util.Collection<java.lang.Integer>",
     "List_UUID": "java.util.Collection<java.util.UUID>",
@@ -135,9 +130,7 @@ _java_types_encode = {
     "List_SqlColumnMetadata": "java.util.List<com.hazelcast.sql.SqlColumnMetadata>",
     "List_JobAndSqlSummary": "java.util.List<com.hazelcast.jet.impl.JobAndSqlSummary>",
     "List_Schema": "java.util.Collection<com.hazelcast.internal.serialization.impl.compact.Schema>",
-
     "Set_UUID": "java.util.Collection<java.util.UUID>",
-
     "EntryList_String_String": "java.util.Collection<java.util.Map.Entry<java.lang.String, java.lang.String>>",
     "EntryList_String_byteArray": "java.util.Collection<java.util.Map.Entry<java.lang.String, byte[]>>",
     "EntryList_Long_byteArray": "java.util.Collection<java.util.Map.Entry<java.lang.Long, byte[]>>",
@@ -171,7 +164,6 @@ _java_types_decode = {
     "JobAndSqlSummary": "com.hazelcast.jet.impl.JobAndSqlSummary",
     "CPMember": "com.hazelcast.cp.internal.CPMemberInfo",
     "MigrationState": "com.hazelcast.internal.partition.MigrationStateImpl",
-
     "List_Long": "java.util.List<java.lang.Long>",
     "List_Integer": "java.util.List<java.lang.Integer>",
     "List_UUID": "java.util.List<java.util.UUID>",
@@ -197,9 +189,7 @@ _java_types_decode = {
     "List_SqlColumnMetadata": "java.util.List<com.hazelcast.sql.SqlColumnMetadata>",
     "List_JobAndSqlSummary": "java.util.List<com.hazelcast.jet.impl.JobAndSqlSummary>",
     "List_Schema": "java.util.List<com.hazelcast.internal.serialization.impl.compact.Schema>",
-
     "Set_UUID": "java.util.Set<java.util.UUID>",
-
     "EntryList_String_String": "java.util.List<java.util.Map.Entry<java.lang.String, java.lang.String>>",
     "EntryList_String_byteArray": "java.util.List<java.util.Map.Entry<java.lang.String, byte[]>>",
     "EntryList_Long_byteArray": "java.util.List<java.util.Map.Entry<java.lang.Long, byte[]>>",

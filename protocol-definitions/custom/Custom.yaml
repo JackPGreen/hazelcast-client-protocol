@@ -1440,3 +1440,14 @@ customTypes:
         type: byte
         nullable: false
         since: 2.7
+  - name: NamespaceConfig
+    since: 2.7
+    params:
+      - name: name
+        type: String
+        nullable: false
+        since: 2.7
+      - name: resourceDefinitions
+        type: Map_String_Data
+        nullable: false
+        since: 2.7

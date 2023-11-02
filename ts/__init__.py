@@ -348,4 +348,5 @@ _ts_types = {
     "DiscoveryConfig": "NA",
     "WanSyncConfig": "NA",
     "List_SimpleEntryView": "NA",
+    "NamespaceConfig": "NA",
 }
