@@ -20,14 +20,14 @@
 #include "hazelcast/util/HazelcastDll.h"
 
 namespace hazelcast {
-    namespace client {
-        namespace protocol {
-            class ClientMessage;
+namespace client {
+namespace protocol {
+ClientMessage;
 
-            namespace codec {
-                void HAZELCAST_API {{ codec.name.lower() }}_encode(ClientMessage &msg, const {{ lang_types_encode(codec.name) }} &{{ param_name(codec.name) }}, bool is_final = false);
-            }
-        }
-    }
-}
+namespace codec {
+    void HAZELCAST_API {{ codec.name.lower() }}_encode(ClientMessage &msg, const {{ lang_types_encode(codec.name) }} &{{ param_name(codec.name) }}, bool is_final = false);
+} // namespace codec
+} // namespace protocol
+} // namespace client
+} // namespace hazelcast
 
