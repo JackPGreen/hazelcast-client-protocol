@@ -3,10 +3,11 @@ import hashlib
 import json
 import re
 import fnmatch
+import subprocess
 from enum import Enum
 import os
 from os import listdir, makedirs
-from os.path import dirname, isfile, join, realpath
+from os.path import isfile, join
 from datetime import date
 
 import jsonschema
@@ -199,19 +200,17 @@ def generate_data_containing_requests_lookup_table(services, custom_services):
     return table
 
 
-def generate_codecs(services, custom_services, template, output_dir, lang, env):
+def generate_codecs(services, custom_services, template, root_dir, output_dir, lang, env):
     makedirs(output_dir, exist_ok=True)
 
     data_containing_requests = generate_data_containing_requests_lookup_table(services, custom_services)
 
     id_fmt = "0x%02x%02x%02x"
     if lang is SupportedLanguages.CPP:
-        curr_dir = dirname(realpath(__file__))
-        cpp_dir = "%s/cpp" % curr_dir
         content = get_rendered_text("header_includes.j2", env)
-        save_file(join(output_dir, "codecs.h"), content)
+        save_file(root_dir, output_dir, "codecs.h", content)
         content = get_rendered_text("source_header.j2", env)
-        save_file(join(output_dir, "codecs.cpp"), content)
+        save_file(root_dir, output_dir, "codecs.cpp", content)
 
     for service in services:
         if ignore_service(service, lang):
@@ -246,7 +245,7 @@ def generate_codecs(services, custom_services, template, output_dir, lang, env):
                         method=method,
                         contains_serialized_data_in_request=contains_serialized_data_in_request
                     )
-                    save_file(join(output_dir, "codecs.h"), content, "a+")
+                    save_file(root_dir, output_dir, "codecs.h", content, "a+")
 
                     codec_template = env.get_template("codec-template.cpp.j2")
                     content = codec_template.render(
@@ -254,24 +253,24 @@ def generate_codecs(services, custom_services, template, output_dir, lang, env):
                         method=method,
                         contains_serialized_data_in_request=contains_serialized_data_in_request
                     )
-                    save_file(join(output_dir, "codecs.cpp"), content, "a+")
+                    save_file(root_dir, output_dir, "codecs.cpp", content, "a+")
                 else:
                     content = template.render(
                         service_name=service_name,
                         method=method,
                         contains_serialized_data_in_request=contains_serialized_data_in_request
                     )
-                    save_file(join(output_dir, codec_file_name), content)
+                    save_file(root_dir, output_dir, codec_file_name, content)
             except NotImplementedError as e:
                 print("[%s] contains missing type mapping so ignoring it. Error: %s" % (codec_file_name, e))
 
     if lang is SupportedLanguages.CPP:
         content = get_rendered_text("footer.j2", env)
-        save_file(join(output_dir, "codecs.h"), content, "a+")
-        save_file(join(output_dir, "codecs.cpp"), content, "a+")
+        save_file(root_dir, output_dir, "codecs.h", content, "a+")
+        save_file(root_dir, output_dir, "codecs.cpp", content, "a+")
 
 
-def generate_custom_codecs(services, template, output_dir, lang, env):
+def generate_custom_codecs(services, template, root_dir, output_dir, lang, env):
     makedirs(output_dir, exist_ok=True)
     if lang == SupportedLanguages.CPP:
         cpp_header_template = env.get_template("custom-codec-template.h.j2")
@@ -289,10 +288,10 @@ def generate_custom_codecs(services, template, output_dir, lang, env):
                         source_file_name = file_name_prefix + ".cpp"
                         codec_file_name = header_file_name
                         content = cpp_header_template.render(codec=codec)
-                        save_file(join(output_dir, header_file_name), content)
+                        save_file(root_dir, output_dir, header_file_name, content)
                         codec_file_name = source_file_name
                         content = cpp_source_template.render(codec=codec)
-                        save_file(join(output_dir, source_file_name), content)
+                        save_file(root_dir, output_dir, source_file_name, content)
                     else:
                         if lang == SupportedLanguages.TS:
                             # Add a getter method to HazelcastJsonValue because it is public and only has toString() API.
@@ -300,7 +299,7 @@ def generate_custom_codecs(services, template, output_dir, lang, env):
                                 codec["params"][0]["getterMethod"] = "toString()"
                         codec_file_name = file_name_generators[lang](codec["name"])
                         content = template.render(codec=codec)
-                        save_file(join(output_dir, codec_file_name), content)
+                        save_file(root_dir, output_dir, codec_file_name, content)
                 except NotImplementedError as e:
                     print("[%s] contains missing type mapping so ignoring it. Error: %s" % (codec_file_name, e))
 
@@ -528,14 +527,33 @@ def validate_against_schema(service, schema):
     return True
 
 
-def save_file(file, content, mode="w"):
+def save_file(root_dir, output_dir, filename, content, mode="w"):
+    file = join(output_dir, filename)
 
-    if file.endswith(".cs"):
-        content = content.replace("\r\n", "\n") # crlf -> lf
-        content = content.replace("\r", "\n")   # cr -> lf
-        content = re.sub("[ \t]+$", "", content, 0, re.M)
-        content = content.rstrip("\n")          # trim all trailing lf
-        content = content  + "\n"             # append one single trailing lf
+    match os.path.splitext(file)[1]:
+        # case SupportedLanguages.CS:
+        case ".cs":
+            content = content.replace("\r\n", "\n") # crlf -> lf
+            content = content.replace("\r", "\n")   # cr -> lf
+            content = re.sub("[ \t]+$", "", content, 0, re.M)
+            content = content.rstrip("\n")          # trim all trailing lf
+            content = content  + "\n"             # append one single trailing lf
+        # case SupportedLanguages.CPP:
+        case ".h" | ".cpp":
+            # Reformat generated code using clang-format to match project style
+            clang_format_file = os.path.join(root_dir, ".clang-format")
+
+            if os.path.isfile(clang_format_file):
+                # Reformat generated code using clang-format to match project style
+                clang_format = subprocess.run(
+                    ["clang-format", f"--style=file:{clang_format_file}"],
+                    input=content.encode("utf-8"),
+                    capture_output=True,
+                    check=True,
+                )
+                content = clang_format.stdout.decode("utf-8")
+            else:
+                raise FileNotFoundError(f"clang-format config not found: {clang_format_file}")
 
     m = hashlib.md5()
     m.update(content.encode("utf-8"))
