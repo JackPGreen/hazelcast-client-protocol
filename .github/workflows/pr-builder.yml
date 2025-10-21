@@ -13,7 +13,7 @@ jobs:
 
       - id: get-langs
         run: |
-          echo "langs=$(python3 -c "from util import SupportedLanguages; import json; print(json.dumps([e.value for e in SupportedLanguages]))")" >> ${GITHUB_OUTPUT}
+          echo "langs=$(python3 -c 'from util import SupportedLanguages; import json; print(json.dumps([e.value for e in SupportedLanguages]))')" >> ${GITHUB_OUTPUT}
 
   generate:
     needs: get-langs
